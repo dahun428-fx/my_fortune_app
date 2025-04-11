@@ -1,26 +1,41 @@
-// app/page.tsx
+// app/[locale]/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import UserInfoForm from '@/components/UserInfoForm'
-import FortuneOptions from '@/components/FortuneOptions'
+import { useTranslations } from 'next-intl'
+import UserInfoForm from '@/components/user/UserInfoForm'
+import FortuneOptions from '@/components/fortune/FortuneOptions'
 import ResultCard from '@/components/ResultCard'
 import { useUserStore } from '@/stores/useUserStore'
 import type { UserInfo } from '@/stores/useUserStore'
 
 export default function Home() {
+  const t = useTranslations()
   const { userInfo, setUserInfo, selectedFortune } = useUserStore()
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState<'user' | 'fortune' | null>(null)
+  const [activeTab, setActiveTab] = useState<'user' | 'fortune' | null>('fortune')
+  const [nextTab, setNextTab] = useState<'user' | 'fortune' | null>(null)
+  const [showResult, setShowResult] = useState(false)
 
-  const toggleTab = (tab: 'user' | 'fortune') => {
-    setActiveTab((prev) => (prev === tab ? null : tab))
+  const handleShowUserForm = () => {
+    if (activeTab) {
+      setNextTab('user')
+      setActiveTab(null)
+    } else {
+      setActiveTab('user')
+    }
   }
 
-  const handleShowUserForm = () => toggleTab('user')
-  const handleShowFortuneForm = () => toggleTab('fortune')
+  const handleShowFortuneForm = () => {
+    if (activeTab) {
+      setNextTab('fortune')
+      setActiveTab(null)
+    } else {
+      setActiveTab('fortune')
+    }
+  }
 
   const handleUserSubmit = (info: UserInfo) => {
     setUserInfo(info)
@@ -30,17 +45,32 @@ export default function Home() {
   const handleFortuneClick = () => {
     if (!selectedFortune) return
     setLoading(true)
+    setShowResult(false)
     setTimeout(() => {
       const name = userInfo?.name ? `${userInfo.name}님, ` : ''
-      setResult(`${name}"${selectedFortune}"에 대한 운세 결과입니다.\n오늘도 좋은 하루 되세요! ✨`)
-      setLoading(false)
+      setResult(t('fortuneResult', { name, topic: t(selectedFortune) }))
+      setActiveTab(null)
+      setTimeout(() => {
+        setShowResult(true)
+        setLoading(false)
+      }, 3000)
     }, 1000)
   }
+
+  useEffect(() => {
+    if (!activeTab && nextTab) {
+      const timeout = setTimeout(() => {
+        setActiveTab(nextTab)
+        setNextTab(null)
+      }, 400)
+      return () => clearTimeout(timeout)
+    }
+  }, [activeTab, nextTab])
 
   return (
     <main className="min-h-screen bg-[#FAEDEB] flex flex-col items-center p-6">
       <div className="max-w-md w-full space-y-6">
-        <h1 className="text-2xl font-bold text-center text-pink-700">운세TMI 🔮</h1>
+        <h1 className="text-2xl font-bold text-center text-pink-700">{t('title')}</h1>
 
         <button
           onClick={handleShowUserForm}
@@ -51,8 +81,8 @@ export default function Home() {
           }`}
         >
           <span>👤 {userInfo
-            ? `${userInfo.name || '사용자'} / ${userInfo.gender || '-'} / ${userInfo.birth || '-'} / ${userInfo.birthTime || '-'} `
-            : '사용자 정보 입력'}</span>
+            ? `${userInfo.name || t('user')} / ${userInfo.gender || '-'} / ${userInfo.birth || '-'} / ${userInfo.birthTime || '-'}`
+            : t('userInfo')}</span>
           {activeTab === 'user' && (
             <span onClick={() => setActiveTab(null)} className="ml-2 text-gray-500 hover:text-gray-700 cursor-pointer">
               ✕
@@ -60,14 +90,15 @@ export default function Home() {
           )}
         </button>
 
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {activeTab === 'user' && (
             <motion.div
               key="userform"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
+              className="overflow-hidden"
             >
               <UserInfoForm onSubmit={handleUserSubmit} defaultValue={userInfo ?? undefined} />
             </motion.div>
@@ -82,7 +113,7 @@ export default function Home() {
               : 'bg-white text-gray-700 hover:bg-pink-50'
           }`}
         >
-          <span>🌙 오늘의 운세</span>
+          <span>🌙 {t('fortune')}</span>
           {activeTab === 'fortune' && (
             <span onClick={() => setActiveTab(null)} className="ml-2 text-gray-500 hover:text-gray-700 cursor-pointer">
               ✕
@@ -90,27 +121,47 @@ export default function Home() {
           )}
         </button>
 
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {activeTab === 'fortune' && (
             <motion.div
               key="fortuneform"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="mt-2"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
+              className="overflow-hidden"
             >
               <FortuneOptions />
-              <ResultCard result={result} />
               <div className="mt-4">
                 <button
                   onClick={handleFortuneClick}
                   disabled={!selectedFortune || loading}
                   className="w-full py-3 rounded-full bg-pink-500 text-white font-semibold shadow-md hover:bg-pink-600 transition disabled:opacity-50"
                 >
-                  {loading ? '점 보는 중...' : '운세 보기'}
+                  {loading ? t('viewingFortune') : t('viewFortune')}
                 </button>
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {loading && (
+          <div className="w-full flex justify-center items-center">
+            <div className="mt-4 w-8 h-8 border-4 border-pink-300 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+
+        <AnimatePresence>
+          {showResult && (
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.6 }}
+              className="mt-6"
+            >
+              <ResultCard result={result} />
             </motion.div>
           )}
         </AnimatePresence>

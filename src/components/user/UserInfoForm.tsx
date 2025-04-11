@@ -1,7 +1,8 @@
-// components/UserInfoForm.tsx
+// components/user/UserInfoForm.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useUserStore } from '@/stores/useUserStore'
 import type { UserInfo } from '@/stores/useUserStore'
 
@@ -11,13 +12,14 @@ type Props = {
 }
 
 export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
+  const t = useTranslations()
   const { userInfo, setUserInfo } = useUserStore()
 
   const [name, setName] = useState('')
   const [gender, setGender] = useState('')
   const [birth, setBirth] = useState('')
   const [birthTime, setBirthTime] = useState('')
-  const [calendarType, setCalendarType] = useState<'양력' | '음력'>('양력')
+  const [calendarType, setCalendarType] = useState<'solar' | 'lunar'>('solar')
 
   useEffect(() => {
     const source = defaultValue || userInfo
@@ -26,7 +28,7 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
       setGender(source.gender || '')
       setBirth(source.birth || '')
       setBirthTime(source.birthTime || '')
-      setCalendarType(source.calendarType || '양력')
+      setCalendarType((source.calendarType as 'solar' | 'lunar') || 'solar')
     }
   }, [defaultValue, userInfo])
 
@@ -43,20 +45,20 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
       gender: '',
       birth: '',
       birthTime: '',
-      calendarType: '양력',
+      calendarType: 'solar',
     }
     setUserInfo(empty)
     setName('')
     setGender('')
     setBirth('')
     setBirthTime('')
-    setCalendarType('양력')
+    setCalendarType('solar')
   }
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow space-y-4">
       <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">이름</label>
+        <label className="text-sm text-gray-600 mb-1">{t('name')}</label>
         <input
           type="text"
           value={name}
@@ -67,27 +69,27 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
 
       <div className="flex gap-4">
         <div className="flex-1">
-          <label className="text-sm text-gray-600 mb-1">성별</label>
+          <label className="text-sm text-gray-600 mb-1">{t('gender')}</label>
           <div className="flex gap-2">
-            {['남성', '여성'].map((g) => (
+            {[t('male'), t('female')].map((label) => (
               <button
-                key={g}
+                key={label}
                 type="button"
-                onClick={() => setGender(g)}
+                onClick={() => setGender(label)}
                 className={`px-4 py-2 rounded-full text-sm font-medium border ${
-                  gender === g
+                  gender === label
                     ? 'bg-pink-500 text-white border-pink-500'
                     : 'bg-white text-gray-700 border-gray-300'
                 }`}
               >
-                {g}
+                {label}
               </button>
             ))}
           </div>
         </div>
 
         <div className="flex-1">
-          <label className="text-sm text-gray-600 mb-1">생년월일</label>
+          <label className="text-sm text-gray-600 mb-1">{t('birth')}</label>
           <input
             type="date"
             value={birth}
@@ -99,7 +101,7 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
 
       <div className="flex gap-4">
         <div className="flex-1">
-          <label className="text-sm text-gray-600 mb-1">출생 시각</label>
+          <label className="text-sm text-gray-600 mb-1">{t('birthTime')}</label>
           <input
             type="time"
             value={birthTime}
@@ -108,14 +110,14 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
           />
         </div>
         <div className="flex-1">
-          <label className="text-sm text-gray-600 mb-1">양/음력</label>
+          <label className="text-sm text-gray-600 mb-1">{t('calendarType')}</label>
           <select
             value={calendarType}
-            onChange={(e) => setCalendarType(e.target.value as '양력' | '음력')}
+            onChange={(e) => setCalendarType(e.target.value as 'solar' | 'lunar')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           >
-            <option value="양력">양력</option>
-            <option value="음력">음력</option>
+            <option value="solar">{t('solar')}</option>
+            <option value="lunar">{t('lunar')}</option>
           </select>
         </div>
       </div>
@@ -125,14 +127,14 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
           type="submit"
           className="flex-1 py-3 rounded-full bg-pink-500 text-white font-semibold shadow-md hover:bg-pink-600 transition"
         >
-          운세 보러 가기
+          {t('viewFortune')}
         </button>
         <button
           type="button"
           onClick={handleReset}
           className="flex-1 py-3 rounded-full bg-gray-200 text-gray-700 font-semibold shadow-md hover:bg-gray-300 transition"
         >
-          초기화
+          {t('reset')}
         </button>
       </div>
     </form>

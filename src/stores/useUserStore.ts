@@ -7,7 +7,7 @@ export type UserInfo = {
   gender: string
   birth: string
   birthTime: string
-  calendarType: '양력' | '음력'
+  calendarType: 'solar' | 'lunar'
 }
 
 type State = {
