@@ -1,6 +1,8 @@
+// app/layout.tsx
 import type { Metadata } from "next"
 import { Geist } from "next/font/google"
 import "./globals.css"
+import ClientWrapper from '@/components/ClientWrapper'
 
 const geist = Geist({
   subsets: ["latin"],
@@ -8,8 +10,8 @@ const geist = Geist({
 })
 
 export const metadata: Metadata = {
-  title: "AI 점보기",
-  description: "Groq 기반 운세 예측 서비스",
+  title: "운세TMI",
+  description: "당신의 하루를 알려주는 AI 운세 예측 서비스, 운세TMI에서 간편하게 확인하세요.",
 }
 
 export default function RootLayout({
@@ -20,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${geist.variable} antialiased bg-[#FAEDEB]`}>
-        {children}
+        <ClientWrapper>
+          {children}
+        </ClientWrapper>
       </body>
     </html>
   )
