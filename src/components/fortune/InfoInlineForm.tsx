@@ -1,8 +1,8 @@
 // components/fortune/InfoInlineForm.tsx
 'use client'
 
+import React, { useEffect, useState } from 'react'
 import { useUserStore } from '@/stores/useUserStore'
-import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 export default function InfoInlineForm() {
@@ -35,9 +35,10 @@ export default function InfoInlineForm() {
       <div className="flex flex-col">
         <label className="text-sm text-gray-600 mb-1">{t('gender')}</label>
         <div className="flex gap-2">
-          {[t('male'), t('female')].map((label) => (
+          {[t('male'), t('female')].map((label, idx) => (
             <button
               key={label}
+              id={`gender-${idx}`}
               onClick={() => setGender(label)}
               className={`px-4 py-2 rounded-full text-sm font-medium border ${
                 gender === label
@@ -52,11 +53,14 @@ export default function InfoInlineForm() {
       </div>
 
       <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">{t('birth')}</label>
+        <label htmlFor="birth" className="text-sm text-gray-600 mb-1">
+          {t('birth')}
+        </label>
         <input
+          id="birth"
           type="date"
           value={birth}
-          onChange={(e) => setBirth(e.target.value)}
+          onChange={e => setBirth(e.target.value)}
           className="px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-pink-300"
         />
       </div>

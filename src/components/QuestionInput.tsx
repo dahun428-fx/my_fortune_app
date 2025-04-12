@@ -16,7 +16,7 @@ export default function QuestionInput({ question, onChange }: Props) {
       type="text"
       placeholder={t('enterQuestion')}
       value={question}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
       className="w-full p-3 border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
     />
   )

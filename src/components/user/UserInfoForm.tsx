@@ -1,6 +1,5 @@
-// components/user/UserInfoForm.tsx
 'use client'
-
+import React from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useUserStore } from '@/stores/useUserStore'
@@ -21,6 +20,7 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
   const [birthTime, setBirthTime] = useState('')
   const [calendarType, setCalendarType] = useState<'solar' | 'lunar'>('solar')
 
+  // ✅ defaultValue는 마운트 시 1회만 적용
   useEffect(() => {
     const source = defaultValue || userInfo
     if (source) {
@@ -30,7 +30,8 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
       setBirthTime(source.birthTime || '')
       setCalendarType((source.calendarType as 'solar' | 'lunar') || 'solar')
     }
-  }, [defaultValue, userInfo])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,11 +59,14 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow space-y-4">
       <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">{t('name')}</label>
+        <label htmlFor="name" className="text-sm text-gray-600 mb-1">
+          {t('name')}
+        </label>
         <input
+          id="name"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={e => setName(e.target.value)}
           className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
         />
       </div>
@@ -71,7 +75,7 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
         <div className="flex-1">
           <label className="text-sm text-gray-600 mb-1">{t('gender')}</label>
           <div className="flex gap-2">
-            {[t('male'), t('female')].map((label) => (
+            {[t('male'), t('female')].map(label => (
               <button
                 key={label}
                 type="button"
@@ -89,11 +93,14 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
         </div>
 
         <div className="flex-1">
-          <label className="text-sm text-gray-600 mb-1">{t('birth')}</label>
+          <label htmlFor="birth" className="text-sm text-gray-600 mb-1">
+            {t('birth')}
+          </label>
           <input
+            id="birth"
             type="date"
             value={birth}
-            onChange={(e) => setBirth(e.target.value)}
+            onChange={e => setBirth(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
         </div>
@@ -101,19 +108,25 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
 
       <div className="flex gap-4">
         <div className="flex-1">
-          <label className="text-sm text-gray-600 mb-1">{t('birthTime')}</label>
+          <label htmlFor="birthTime" className="text-sm text-gray-600 mb-1">
+            {t('birthTime')}
+          </label>
           <input
+            id="birthTime"
             type="time"
             value={birthTime}
-            onChange={(e) => setBirthTime(e.target.value)}
+            onChange={e => setBirthTime(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
         </div>
         <div className="flex-1">
-          <label className="text-sm text-gray-600 mb-1">{t('calendarType')}</label>
+          <label htmlFor="calendarType" className="text-sm text-gray-600 mb-1">
+            {t('calendarType')}
+          </label>
           <select
+            id="calendarType"
             value={calendarType}
-            onChange={(e) => setCalendarType(e.target.value as 'solar' | 'lunar')}
+            onChange={e => setCalendarType(e.target.value as 'solar' | 'lunar')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           >
             <option value="solar">{t('solar')}</option>

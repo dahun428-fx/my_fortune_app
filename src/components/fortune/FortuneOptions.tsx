@@ -1,7 +1,6 @@
 // components/fortune/FortuneOptions.tsx
 'use client'
-
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useUserStore } from '@/stores/useUserStore'
 import { useToast } from '@/context/ToastContext'
 import { AnimatePresence, motion } from 'framer-motion'

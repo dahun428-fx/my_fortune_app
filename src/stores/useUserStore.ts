@@ -19,11 +19,11 @@ type State = {
 
 export const useUserStore = create<State>()(
   persist(
-    (set) => ({
+    set => ({
       userInfo: null,
-      setUserInfo: (info) => set({ userInfo: info }),
+      setUserInfo: info => set({ userInfo: info }),
       selectedFortune: '',
-      setSelectedFortune: (value) => set({ selectedFortune: value }),
+      setSelectedFortune: value => set({ selectedFortune: value }),
     }),
     {
       name: 'user-store', // localStorage key
