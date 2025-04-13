@@ -11,6 +11,11 @@ export default function InfoInlineForm() {
   const [birth, setBirth] = useState('')
   const t = useTranslations()
 
+  const genderOptions = [
+    { label: t('male'), value: 'male' },
+    { label: t('female'), value: 'female' },
+  ]
+
   useEffect(() => {
     if (!userInfo?.gender && !userInfo?.birth) {
       setGender('')
@@ -39,16 +44,16 @@ export default function InfoInlineForm() {
       <div className="flex flex-col">
         <label className="text-sm text-gray-600 mb-1">{t('gender')}</label>
         <div className="flex gap-2">
-          {[t('male'), t('female')].map((label, idx) => (
+          {genderOptions.map(({ label, value }) => (
             <button
-              key={label}
-              id={`gender-${idx}`}
-              onClick={() => setGender(label)}
+              key={value}
+              type="button"
+              onClick={() => setGender(value)}
               className={`px-4 py-2 rounded-full text-sm font-medium border ${
-                gender === label
+                gender === value
                   ? 'bg-pink-500 text-white border-pink-500'
                   : 'bg-white text-gray-700 border-gray-300'
-              } transition`}
+              }`}
             >
               {label}
             </button>

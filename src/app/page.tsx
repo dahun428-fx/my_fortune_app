@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import UserInfoForm from '@/components/user/UserInfoForm'
@@ -56,8 +56,8 @@ export default function Home() {
         name: userInfo?.name ?? '',
         gender: userInfo!.gender,
         birth: userInfo!.birth,
-        birth_time: userInfo?.birthTime ?? '',
-        calendar_type: userInfo?.calendarType ?? 'solar',
+        birthTime: userInfo?.birthTime ?? '',
+        calendarType: userInfo?.calendarType ?? 'solar',
         topic: selectedFortune,
         language: userInfo?.language ?? 'ko',
       })
@@ -85,6 +85,21 @@ export default function Home() {
     }
   }, [activeTab, nextTab])
 
+  const tabTitle = useMemo(() => {
+    if (!userInfo?.gender && !userInfo?.birth) {
+      return t('userInfo')
+    }
+
+    const parts = [
+      userInfo.name || t('user'),
+      userInfo.gender !== '' ? (userInfo.gender === 'male' ? t('male') : t('female')) : '',
+      userInfo.birth,
+      userInfo.birthTime,
+    ].filter(Boolean) // falsy 값 제거
+
+    return parts.join(' / ')
+  }, [t, userInfo])
+
   return (
     <main className="min-h-screen bg-[#FAEDEB] flex flex-col items-center p-6">
       <div className="max-w-md w-full space-y-6">
@@ -99,14 +114,7 @@ export default function Home() {
               : 'bg-white text-gray-700 hover:bg-pink-50'
           }`}
         >
-          <span>
-            👤{' '}
-            {userInfo
-              ? `${userInfo.name || t('user')} / ${userInfo.gender || '-'} / ${userInfo.birth || '-'} / ${
-                  userInfo.birthTime || '-'
-                }`
-              : t('userInfo')}
-          </span>
+          <span>👤 {tabTitle}</span>
           {activeTab === 'user' && (
             <span
               onClick={() => setActiveTab(null)}

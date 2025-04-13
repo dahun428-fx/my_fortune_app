@@ -13,7 +13,7 @@ export type UserInfo = {
 
 type State = {
   userInfo: UserInfo | null
-  setUserInfo: (info: UserInfo) => void
+  setUserInfo: (info: UserInfo | null) => void
   selectedFortune: string
   setSelectedFortune: (value: string) => void
 }

@@ -8,7 +8,7 @@ import type { UserInfo } from '@/stores/useUserStore'
  */
 export function validateUserInfo(info: UserInfo | null): boolean {
   if (!info) return false
-  const validGender = info.gender === '남성' || info.gender === '여성'
+  const validGender = !!info.gender
   const validBirth = /^\d{4}-\d{2}-\d{2}$/.test(info.birth ?? '')
   return validGender && validBirth
 }

@@ -8,14 +8,15 @@ import FortuneSelector from '@/components/fortune/FortuneSelector'
 import InfoInlineForm from '@/components/fortune/InfoInlineForm'
 import ShakeWrapper from '@/components/common/ShakeWrapper'
 import { validateUserInfo } from '@/utils/validateUserInfo'
+import { useTranslations } from 'use-intl'
 
 export default function FortuneOptions() {
   const { userInfo, setSelectedFortune, selectedFortune } = useUserStore()
   const { showToast } = useToast()
   const [shake, setShake] = useState(false)
+  const t = useTranslations()
 
   const isInfoInvalid = !validateUserInfo(userInfo)
-
   useEffect(() => {
     if (isInfoInvalid) {
       setSelectedFortune('')
@@ -46,7 +47,7 @@ export default function FortuneOptions() {
           >
             <ShakeWrapper trigger={shake}>
               <div className="bg-white p-4 rounded-xl shadow border border-red-400">
-                <p className="text-sm text-gray-600 mb-2">간단한 정보를 입력해주세요</p>
+                <p className="text-sm text-gray-600 mb-2">{t('pleaseInputInfo')}</p>
                 <InfoInlineForm />
               </div>
             </ShakeWrapper>
