@@ -8,6 +8,7 @@ export type UserInfo = {
   birth: string
   birthTime: string
   calendarType: 'solar' | 'lunar'
+  language?: 'ko' | 'en'
 }
 
 type State = {

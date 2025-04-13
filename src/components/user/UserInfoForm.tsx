@@ -1,6 +1,6 @@
 'use client'
-import React from 'react'
-import { useEffect, useState } from 'react'
+
+import React, { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useUserStore } from '@/stores/useUserStore'
 import type { UserInfo } from '@/stores/useUserStore'
@@ -15,23 +15,32 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
   const { userInfo, setUserInfo } = useUserStore()
 
   const [name, setName] = useState('')
-  const [gender, setGender] = useState('')
+  const [gender, setGender] = useState<string>('')
   const [birth, setBirth] = useState('')
   const [birthTime, setBirthTime] = useState('')
   const [calendarType, setCalendarType] = useState<'solar' | 'lunar'>('solar')
 
-  // ✅ defaultValue는 마운트 시 1회만 적용
+  const genderOptions = [
+    { label: t('male'), value: 'male' },
+    { label: t('female'), value: 'female' },
+  ]
+
+  const calendarOptions = [
+    { label: t('solar'), value: 'solar' },
+    { label: t('lunar'), value: 'lunar' },
+  ]
+
   useEffect(() => {
-    const source = defaultValue || userInfo
+    // defaultValue가 있으면 우선, 없으면 store 사용
+    const source = defaultValue ?? userInfo
     if (source) {
       setName(source.name || '')
-      setGender(source.gender || '')
+      setGender((source.gender as 'male' | 'female') || '')
       setBirth(source.birth || '')
       setBirthTime(source.birthTime || '')
       setCalendarType((source.calendarType as 'solar' | 'lunar') || 'solar')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [defaultValue, userInfo])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,13 +84,13 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
         <div className="flex-1">
           <label className="text-sm text-gray-600 mb-1">{t('gender')}</label>
           <div className="flex gap-2">
-            {[t('male'), t('female')].map(label => (
+            {genderOptions.map(({ label, value }) => (
               <button
-                key={label}
+                key={value}
                 type="button"
-                onClick={() => setGender(label)}
+                onClick={() => setGender(value)}
                 className={`px-4 py-2 rounded-full text-sm font-medium border ${
-                  gender === label
+                  gender === value
                     ? 'bg-pink-500 text-white border-pink-500'
                     : 'bg-white text-gray-700 border-gray-300'
                 }`}
@@ -129,8 +138,11 @@ export default function UserInfoForm({ onSubmit, defaultValue }: Props) {
             onChange={e => setCalendarType(e.target.value as 'solar' | 'lunar')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           >
-            <option value="solar">{t('solar')}</option>
-            <option value="lunar">{t('lunar')}</option>
+            {calendarOptions.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
           </select>
         </div>
       </div>

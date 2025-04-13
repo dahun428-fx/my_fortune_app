@@ -27,5 +27,6 @@
   "name": "이름",
   "user": "사용자",
   "enterQuestion": "질문을 입력하세요",
-  "fortuneResultTitle": "운세 결과"
+  "fortuneResultTitle": "운세 결과",
+  "defaultFallbackFortune": "운세를 가져오는 데 문제가 발생했어요. 다시 시도해 주세요."
 }

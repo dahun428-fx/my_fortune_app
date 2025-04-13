@@ -10,6 +10,7 @@ import { useUserStore } from '@/stores/useUserStore'
 import type { UserInfo } from '@/stores/useUserStore'
 import { validateUserInfo } from '@/utils/validateUserInfo'
 import { useToast } from '@/context/ToastContext'
+import { getFortune } from '@/lib/api/fortune'
 
 export default function Home() {
   const t = useTranslations()
@@ -22,21 +23,13 @@ export default function Home() {
   const [showResult, setShowResult] = useState(false)
 
   const handleShowUserForm = () => {
-    if (activeTab) {
-      setNextTab('user')
-      setActiveTab(null)
-    } else {
-      setActiveTab('user')
-    }
+    setNextTab(activeTab ? 'user' : null)
+    setActiveTab(activeTab ? null : 'user')
   }
 
   const handleShowFortuneForm = () => {
-    if (activeTab) {
-      setNextTab('fortune')
-      setActiveTab(null)
-    } else {
-      setActiveTab('fortune')
-    }
+    setNextTab(activeTab ? 'fortune' : null)
+    setActiveTab(activeTab ? null : 'fortune')
   }
 
   const handleUserSubmit = (info: UserInfo) => {
@@ -44,7 +37,7 @@ export default function Home() {
     setActiveTab('fortune')
   }
 
-  const handleFortuneClick = () => {
+  const handleFortuneClick = async () => {
     const isValidUser = validateUserInfo(userInfo)
     if (!isValidUser) {
       toast.showToast(t('requiredGenderBirth'))
@@ -57,15 +50,29 @@ export default function Home() {
 
     setLoading(true)
     setShowResult(false)
-    setTimeout(() => {
-      const name = userInfo?.name ? `${userInfo.name}님, ` : ''
-      setResult(t('fortuneResult', { name, topic: t(selectedFortune) }))
+
+    try {
+      const response = await getFortune({
+        name: userInfo?.name ?? '',
+        gender: userInfo!.gender,
+        birth: userInfo!.birth,
+        birth_time: userInfo?.birthTime ?? '',
+        calendar_type: userInfo?.calendarType ?? 'solar',
+        topic: selectedFortune,
+        language: userInfo?.language ?? 'ko',
+      })
+
+      setResult(response || t('defaultFallbackFortune'))
+    } catch (error) {
+      console.error(error)
+      toast.showToast(t('errorFetchingFortune'))
+    } finally {
       setActiveTab(null)
       setTimeout(() => {
         setShowResult(true)
         setLoading(false)
-      }, 3000)
-    }, 1000)
+      }, 500)
+    }
   }
 
   useEffect(() => {
