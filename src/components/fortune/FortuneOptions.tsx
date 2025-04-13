@@ -20,7 +20,7 @@ export default function FortuneOptions() {
     if (isInfoInvalid) {
       setSelectedFortune('')
     }
-  }, [userInfo])
+  }, [userInfo, isInfoInvalid, setSelectedFortune])
 
   const handleSelect = (option: string) => {
     if (isInfoInvalid) {

@@ -4,7 +4,6 @@ import { Geist } from 'next/font/google'
 import '@/app/styles/tailwind.css'
 import ClientWrapper from '@/components/ClientWrapper'
 import { NextIntlClientProvider } from 'next-intl'
-import { getLocale } from 'next-intl/server'
 
 const geist = Geist({
   subsets: ['latin'],
@@ -17,8 +16,6 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await getLocale()
-
   return (
     <html lang="ko">
       <body className={`${geist.variable} antialiased bg-[#FAEDEB]`}>

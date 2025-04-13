@@ -18,17 +18,21 @@ export default function InfoInlineForm() {
     }
   }, [userInfo])
 
-  useEffect(() => {
-    if (gender && birth) {
-      setUserInfo({
-        name: userInfo?.name || '',
-        gender,
-        birth,
-        birthTime: userInfo?.birthTime || '',
-        calendarType: userInfo?.calendarType || 'solar',
-      })
-    }
-  }, [gender, birth])
+  useEffect(
+    () => {
+      if (gender && birth) {
+        setUserInfo({
+          name: userInfo?.name || '',
+          gender,
+          birth,
+          birthTime: userInfo?.birthTime || '',
+          calendarType: userInfo?.calendarType || 'solar',
+        })
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gender, birth]
+  )
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-end sm:gap-4 gap-4">

@@ -36,7 +36,7 @@ export function translateRequestToEnglish(
   info: UserInfo & { topic?: string; language: string }
 ): Omit<UserInfo, 'language'> & { topic?: string } {
   if (info.language !== 'ko') return info
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const translated: any = { ...info }
 
   for (const key of ['gender', 'calendarType', 'topic'] as TranslatableKeys[]) {
