@@ -8,7 +8,6 @@ export type UserInfo = {
   birth: string
   birthTime: string
   calendarType: 'solar' | 'lunar'
-  language?: 'ko' | 'en'
 }
 
 type State = {
@@ -16,15 +15,28 @@ type State = {
   setUserInfo: (info: UserInfo | null) => void
   selectedFortune: string
   setSelectedFortune: (value: string) => void
+
+  // 언어 관련 추가
+  language: 'ko' | 'en'
+  setLanguage: (lang: 'ko' | 'en') => void
+  toggleLanguage: () => void
 }
 
 export const useUserStore = create<State>()(
   persist(
-    set => ({
+    (set, get) => ({
       userInfo: null,
       setUserInfo: info => set({ userInfo: info }),
       selectedFortune: '',
       setSelectedFortune: value => set({ selectedFortune: value }),
+
+      // 추가된 부분
+      language: 'ko',
+      setLanguage: lang => set({ language: lang }),
+      toggleLanguage: () => {
+        const next = get().language === 'ko' ? 'en' : 'ko'
+        set({ language: next })
+      },
     }),
     {
       name: 'user-store', // localStorage key

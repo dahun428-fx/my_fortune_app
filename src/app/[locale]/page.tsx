@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
+import { useRouter, usePathname } from 'next/navigation'
 import UserInfoForm from '@/components/user/UserInfoForm'
 import FortuneOptions from '@/components/fortune/FortuneOptions'
 import ResultCard from '@/components/ResultCard'
@@ -14,6 +15,9 @@ import { getFortune } from '@/lib/api/fortune'
 
 export default function Home() {
   const t = useTranslations()
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
   const toast = useToast()
   const { userInfo, setUserInfo, selectedFortune } = useUserStore()
   const [result, setResult] = useState('')
@@ -21,6 +25,16 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'user' | 'fortune' | null>('fortune')
   const [nextTab, setNextTab] = useState<'user' | 'fortune' | null>(null)
   const [showResult, setShowResult] = useState(false)
+
+  const language = useUserStore(state => state.language)
+  const toggleLanguage = useUserStore(state => state.toggleLanguage)
+
+  const handleToggle = () => {
+    const nextLang = language === 'ko' ? 'en' : 'ko'
+    toggleLanguage()
+    const newPath = `/${nextLang}${pathname.replace(/^\/(ko|en)/, '')}`
+    router.push(newPath)
+  }
 
   const handleShowUserForm = () => {
     setNextTab(activeTab ? 'user' : null)
@@ -59,7 +73,7 @@ export default function Home() {
         birthTime: userInfo?.birthTime ?? '',
         calendarType: userInfo?.calendarType ?? 'solar',
         topic: selectedFortune,
-        language: userInfo?.language ?? 'ko',
+        language: language,
       })
 
       setResult(response || t('defaultFallbackFortune'))
@@ -95,7 +109,7 @@ export default function Home() {
       userInfo.gender !== '' ? (userInfo.gender === 'male' ? t('male') : t('female')) : '',
       userInfo.birth,
       userInfo.birthTime,
-    ].filter(Boolean) // falsy 값 제거
+    ].filter(Boolean)
 
     return parts.join(' / ')
   }, [t, userInfo])
@@ -103,7 +117,16 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#FAEDEB] flex flex-col items-center p-6">
       <div className="max-w-md w-full space-y-6">
-        <h1 className="text-2xl font-bold text-center text-pink-700">{t('title')}</h1>
+        {/* 타이틀 + 언어 토글 버튼 */}
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-pink-700">{t('title')}</h1>
+          <button
+            onClick={handleToggle}
+            className="text-sm text-pink-600 hover:underline border border-pink-300 px-3 py-1 rounded-full"
+          >
+            {locale === 'ko' ? 'EN' : '한글'}
+          </button>
+        </div>
 
         {/* 사용자 정보 버튼 */}
         <button
