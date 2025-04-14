@@ -28,5 +28,21 @@
   "user": "User",
   "enterQuestion": "Enter your question",
   "fortuneResultTitle": "Fortune Result",
-  "defaultFallbackFortune": "There was a problem retrieving your fortune. Please try again."
+  "defaultFallbackFortune": "There was a problem retrieving your fortune. Please try again.",
+  "footer": {
+    "copyright": "© 2025 FortuneTMI. All rights reserved.",
+    "madeBy": "Made with by Jung Dahun",
+    "github": "@ GitHub",
+    "poweredBy": "Powered by Next.js · FastAPI · Groq",
+    "testNotice": "This is a demo service. The fortune is for entertainment only.",
+    "contact": "Contact: ",
+    "email": "dahun428@naver.com"
+  },
+  "share": {
+    "label": "Share your fortune!",
+    "copy": "Copy",
+    "twitter": "Twitter",
+    "kakao": "KakaoTalk",
+    "copyAlert": "Result copied to clipboard!"
+  }
 }

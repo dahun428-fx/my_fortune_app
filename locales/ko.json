@@ -28,5 +28,21 @@
   "user": "사용자",
   "enterQuestion": "질문을 입력하세요",
   "fortuneResultTitle": "운세 결과",
-  "defaultFallbackFortune": "운세를 가져오는 데 문제가 발생했어요. 다시 시도해 주세요."
+  "defaultFallbackFortune": "운세를 가져오는 데 문제가 발생했어요. 다시 시도해 주세요.",
+  "footer": {
+    "copyright": "© 2025 운세TMI. 모든 권리 보유.",
+    "madeBy": "Made with by Jung Dahun",
+    "github": "@ GitHub",
+    "poweredBy": "Next.js · FastAPI · Groq 기반",
+    "testNotice": "본 서비스는 테스트용이며, 운세 결과는 참고용입니다.",
+    "contact": "문의: ",
+    "email": "dahun428@naver.com"
+  },
+  "share": {
+    "label": "결과를 공유해보세요!",
+    "copy": "복사하기",
+    "twitter": "",
+    "kakao": "카카오톡",
+    "copyAlert": "결과가 복사되었습니다!"
+  }
 }

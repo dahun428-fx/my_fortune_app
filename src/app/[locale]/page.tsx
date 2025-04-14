@@ -12,6 +12,8 @@ import type { UserInfo } from '@/stores/useUserStore'
 import { validateUserInfo } from '@/utils/validateUserInfo'
 import { useToast } from '@/context/ToastContext'
 import { getFortune } from '@/lib/api/fortune'
+import Footer from '@/components/footer/Footer'
+import ShareButtons from '@/components/sns/ShareButtons'
 
 export default function Home() {
   const t = useTranslations()
@@ -226,9 +228,13 @@ export default function Home() {
               className="mt-6"
             >
               <ResultCard result={result} />
+              <ShareButtons result={result} />
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+      <div className="max-w-md w-full">
+        <Footer />
       </div>
     </main>
   )
